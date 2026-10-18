@@ -61,6 +61,31 @@ h2{font-size:14px;color:var(--gold-ink);letter-spacing:.06em;margin:18px 0 8px}
   background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:6px;font-size:15px}
 .links a::after{content:"›";color:var(--sub);font-size:20px}
 .hide{display:none}
+.card{flex-wrap:wrap}
+.btns button.prac{font:inherit;font-size:13px;font-weight:600;padding:7px 10px;border-radius:9px;border:1px solid var(--navy);color:var(--navy);background:transparent}
+.btns button.prac.on{background:var(--navy);color:var(--bg)}
+.panel{flex:1 1 100%;margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+.vtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.vtabs button{font:inherit;font-size:13px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.vtabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.player{position:relative;width:100%;max-width:230px;margin:0 auto;aspect-ratio:9/16;background:#000;border-radius:12px;overflow:hidden}
+.player.wide{max-width:none;aspect-ratio:16/9}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.panel .lbl{font-size:12px;color:var(--sub);margin:10px 0 4px;display:flex;justify-content:space-between}
+.panel textarea{width:100%;min-height:110px;font-size:20px;line-height:1.6;font-weight:700;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;resize:vertical}
+.panel .novideo{font-size:13px;color:var(--sub);padding:10px;background:var(--bg);border-radius:10px}
+.saved{color:var(--done)}
+.allbtn{width:100%;font:inherit;font-size:16px;font-weight:800;padding:13px;border:0;border-radius:12px;background:var(--gold);color:#111;margin-bottom:12px}
+#allbox{background:var(--card);border:2px solid var(--gold);border-radius:14px;padding:12px;margin-bottom:14px}
+#allbox .now{font-size:17px;font-weight:800;margin:10px 0 2px;text-align:center}
+#allbox .meta{font-size:12px;color:var(--sub);text-align:center}
+#allbox .memo{white-space:pre-wrap;font-size:18px;font-weight:700;line-height:1.6;background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:8px}
+#allbox .ctl{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+#allbox .ctl button,#allbox .opt button{font:inherit;font-size:14px;font-weight:700;padding:8px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+#allbox .opt{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+#allbox .opt button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#allplayer{position:relative;width:100%;max-width:420px;margin:0 auto;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+#allplayer iframe,#allplayer>div{position:absolute;inset:0;width:100%;height:100%}
 footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
 </style>
 </head>
@@ -75,6 +100,24 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
   </nav>
 </header>
 <main>
+  <div id="allbtns" style="display:flex;gap:8px"><button class="allbtn" id="allopen">▶ 連続再生</button><button class="allbtn" id="shufopen">🔀 シャッフル再生</button></div>
+  <div id="allbox" class="hide">
+    <div class="opt" id="allopt">
+      <button data-mode="all" class="on">個人＋チーム</button>
+      <button data-mode="p">個人だけ</button>
+      <button data-mode="t">チームだけ</button>
+      <button data-mode="nabe">🔀 シャッフル（チャント鍋）</button>
+    </div>
+    <div id="allplayer"><div id="ytall"></div></div>
+    <div class="now" id="allnow">準備中…</div>
+    <div class="meta" id="allmeta"></div>
+    <div class="memo hide" id="allmemo"></div>
+    <div class="ctl">
+      <button id="allprev">⏮ 前へ</button>
+      <button id="allnext">次へ ⏭</button>
+      <button id="allclose">■ 閉じる</button>
+    </div>
+  </div>
   <section id="players">
     <div class="tools">
       <input id="q" type="search" placeholder="名前・背番号で検索">
@@ -83,9 +126,16 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
     <div class="progress"><span id="prog"></span><div class="bar"><i id="progbar"></i></div></div>
     <div id="list"></div>
   </section>
-  <section id="team" class="hide"><div id="teamlist"></div></section>
+  <section id="team" class="hide">
+    <div id="nabe" class="card" style="display:block;border:2px solid var(--gold)">
+      <div class="name">🍲 チャント鍋</div>
+      <div class="orig">個人チャントもチームチャントも全部ごった煮。シャッフルした順番で、止めるまで連続再生します。</div>
+      <div class="btns"><a class="main" href="#" id="nabebtn">🍲 チャント鍋をはじめる</a></div>
+    </div>
+    <div id="teamlist"></div>
+  </section>
   <section id="links" class="hide links"><div id="linklist"></div></section>
-  <footer>動画はファン・公式の投稿へのリンクです。動画未登録の選手の「▶ チャント」は、YouTubeを再生回数の多い順で検索します。<br>練習済みチェックはこの端末にのみ保存されます。</footer>
+  <footer>「🎤 ページ内練習」で動画をページ内でくり返し再生し、歌詞メモを書けます（メモはこの端末だけに保存）。動画はファン・公式の投稿です。動画未登録の選手の「▶ チャント」は、YouTubeを再生回数の多い順で検索します。<br>練習済みチェックはこの端末にのみ保存されます。</footer>
 </main>
 <script src="data.js"></script>
 <script>
@@ -106,6 +156,46 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
   });
   document.getElementById("q").addEventListener("input",render);
 
+  var LKEY="vega-ouen-lyrics", lyrics={}, openP={}, vSel={};
+  try{ lyrics=JSON.parse(localStorage.getItem(LKEY)||"{}")||{}; }catch(e){ lyrics={}; }
+  function saveLyrics(){ try{ localStorage.setItem(LKEY,JSON.stringify(lyrics)); return true; }catch(e){ return false; } }
+  function vid(u){
+    var m=String(u||"").match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([A-Za-z0-9_-]{11})/);
+    if(!m) return null;
+    var t=String(u).match(/[?&](?:t|start)=(\d+)/);
+    return {id:m[1], start:t?+t[1]:0, shorts:/shorts\//.test(u)};
+  }
+  function videos(p){
+    var v=[];
+    if(p.chant) v.push({label:"チャント", url:p.chant});
+    if(p.extra) v.push({label:p.extra.label, url:p.extra.url});
+    return v.filter(function(x){return vid(x.url)});
+  }
+  function embed(url,end){
+    var v=vid(url), seg=v.start||end;
+    var src="https://www.youtube-nocookie.com/embed/"+v.id+"?playsinline=1&rel=0&autoplay=1"+
+      (seg?"":"&loop=1&playlist="+v.id)+(v.start?"&start="+v.start:"")+(end?"&end="+end:"");
+    return '<div class="player'+(v.shorts?'':' wide')+'"><iframe src="'+src+'" title="チャント動画" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>';
+  }
+  function panelHtml(p){
+    var vs=videos(p), sel=Math.min(vSel[p.no]||0, Math.max(vs.length-1,0));
+    var h='<div class="panel" data-panel="'+p.no+'">';
+    if(vs.length){
+      if(vs.length>1){
+        h+='<div class="vtabs">';
+        vs.forEach(function(x,i){ h+='<button data-vsel="'+p.no+':'+i+'" class="'+(i===sel?"on":"")+'">'+esc(x.label)+'</button>'; });
+        h+='</div>';
+      }
+      h+=embed(vs[sel].url);
+    } else {
+      h+='<div class="novideo">この選手は動画が未登録です。歌詞メモだけで練習できます。</div>';
+    }
+    var txt=(lyrics[p.no]!=null)?lyrics[p.no]:(p.lyric||"");
+    h+='<div class="lbl"><span>歌詞・メモ（自由に書けます）</span><span class="saved" id="sv'+p.no+'"></span></div>';
+    h+='<textarea data-lyric="'+p.no+'" placeholder="覚えた歌詞やコールを書いておこう">'+esc(txt)+'</textarea>';
+    return h+'</div>';
+  }
+
   function render(){
     var q=document.getElementById("q").value.trim().replace(/\s/g,"");
     var html="";
@@ -120,6 +210,7 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
       else b+='<a class="main" href="'+yt(q2)+'&sp=CAM%253D" target="_blank" rel="noopener">▶ チャント</a>';
       if(p.extra) b+='<a class="main" href="'+esc(p.extra.url)+'" target="_blank" rel="noopener">▶ '+esc(p.extra.label)+'</a>';
       b+='<a href="'+yt(q2)+'" target="_blank" rel="noopener">YouTubeで探す</a>';
+      b+='<button class="prac'+(openP[p.no]?" on":"")+'" data-prac="'+p.no+'">🎤 ページ内練習</button>';
       html+='<div class="card'+(isDone?" done":"")+'">'+
         '<div class="num">'+p.no+'</div>'+
         '<div class="body"><div class="name">'+esc(p.name)+'<span class="pos">'+p.pos+(p.note?" · "+esc(p.note):"")+'</span></div>'+
@@ -128,6 +219,7 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
         (p.chant||p.lyric?'':'<div class="nochant">再生数の多い順に表示</div>')+
         '<div class="btns">'+b+'</div></div>'+
         '<label class="chk"><input type="checkbox" data-id="'+id+'"'+(isDone?" checked":"")+'>練習済</label>'+
+        (openP[p.no]?panelHtml(p):'')+
         '</div>';
     });
     document.getElementById("list").innerHTML=html||'<p class="nochant">該当なし</p>';
@@ -136,10 +228,38 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
     document.getElementById("prog").textContent="チャント練習 "+n+" / "+withChant.length+" 人";
     document.getElementById("progbar").style.width=(withChant.length?n/withChant.length*100:0)+"%";
   }
-  document.getElementById("list").addEventListener("change",function(e){
+  function updProg(){
+    var n=PLAYERS.filter(function(p){return done["p"+p.no]}).length;
+    document.getElementById("prog").textContent="チャント練習 "+n+" / "+PLAYERS.length+" 人";
+    document.getElementById("progbar").style.width=(n/PLAYERS.length*100)+"%";
+  }
+  var listEl=document.getElementById("list");
+  listEl.addEventListener("change",function(e){
     var id=e.target.getAttribute("data-id"); if(!id) return;
     if(e.target.checked) done[id]=1; else delete done[id];
-    save(); render();
+    save(); e.target.closest(".card").classList.toggle("done",e.target.checked); updProg();
+  });
+  listEl.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    var card=b.closest(".card");
+    if(b.dataset.prac){
+      var no=+b.dataset.prac, p=PLAYERS.filter(function(x){return x.no===no})[0];
+      var pn=card.querySelector(".panel");
+      if(pn){ pn.remove(); delete openP[no]; b.classList.remove("on"); }
+      else { openP[no]=1; b.classList.add("on"); card.insertAdjacentHTML("beforeend",panelHtml(p)); }
+    } else if(b.dataset.vsel){
+      var a=b.dataset.vsel.split(":"), no2=+a[0]; vSel[no2]=+a[1];
+      var p2=PLAYERS.filter(function(x){return x.no===no2})[0];
+      card.querySelector(".panel").outerHTML=panelHtml(p2);
+    }
+  });
+  var tmr={};
+  listEl.addEventListener("input",function(e){
+    var no=e.target.dataset && e.target.dataset.lyric; if(!no) return;
+    lyrics[no]=e.target.value;
+    clearTimeout(tmr[no]); tmr[no]=setTimeout(function(){
+      var ok=saveLyrics(), el=document.getElementById("sv"+no); if(el) el.textContent=ok?"保存しました":"この端末では保存できません";
+    },400);
   });
 
   var th="";
@@ -147,7 +267,7 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
     var id="t"+i, isDone=!!done[id];
     th+='<div class="card'+(isDone?" done":"")+'"><div class="num" style="font-size:14px">'+(i+1)+'</div><div class="body"><div class="name">'+esc(c.name)+'</div>'+
       (c.orig?'<div class="orig">原曲：'+esc(c.orig)+'</div>':'')+
-      '<div class="btns"><a class="main" href="'+esc(c.url)+'" target="_blank" rel="noopener">▶ 再生</a><a href="'+yt("ベガルタ "+c.name+" チャント")+'" target="_blank" rel="noopener">YouTubeで探す</a></div></div>'+
+      '<div class="btns"><a class="main" href="'+esc(c.url)+'" target="_blank" rel="noopener">▶ 再生</a><a href="'+yt("ベガルタ "+c.name+" チャント")+'" target="_blank" rel="noopener">YouTubeで探す</a><button class="prac" data-tprac="'+i+'">🎤 ページ内練習</button></div></div>'+
       '<label class="chk"><input type="checkbox" data-id="'+id+'"'+(isDone?" checked":"")+'>練習済</label></div>';
   });
   var tl=document.getElementById("teamlist"); tl.innerHTML=th;
@@ -155,6 +275,25 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
     var id=e.target.getAttribute("data-id"); if(!id) return;
     if(e.target.checked) done[id]=1; else delete done[id];
     save(); e.target.closest(".card").classList.toggle("done",e.target.checked);
+  });
+  function teamPanel(i){
+    var c=TEAM_CHANTS[i], key="t"+i, txt=lyrics[key]||"";
+    var h='<div class="panel">'+(vid(c.url)?embed(c.url,c.end):'<div class="novideo">動画がありません</div>');
+    h+='<div class="lbl"><span>歌詞・メモ（自由に書けます）</span><span class="saved" id="sv'+key+'"></span></div>';
+    h+='<textarea data-lyric="'+key+'" placeholder="覚えた歌詞やコールを書いておこう">'+esc(txt)+'</textarea>';
+    return h+'</div>';
+  }
+  tl.addEventListener("click",function(e){
+    var b=e.target.closest("button[data-tprac]"); if(!b) return;
+    var card=b.closest(".card"), pn=card.querySelector(".panel");
+    if(pn){ pn.remove(); b.classList.remove("on"); }
+    else { b.classList.add("on"); card.insertAdjacentHTML("beforeend",teamPanel(+b.dataset.tprac)); }
+  });
+  var tt={};
+  tl.addEventListener("input",function(e){
+    var k=e.target.dataset && e.target.dataset.lyric; if(!k) return;
+    lyrics[k]=e.target.value;
+    clearTimeout(tt[k]); tt[k]=setTimeout(function(){ var ok=saveLyrics(), el=document.getElementById("sv"+k); if(el) el.textContent=ok?"保存しました":"この端末では保存できません"; },400);
   });
 
   var lh="";
@@ -173,6 +312,84 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
     };
   });
   render();
+
+  // ===== 全チャント連続再生 =====
+  var qmode="all", queue=[], qi=0, ytp=null, apiReady=false, wantStart=false;
+  function buildQueue(){
+    var q=[];
+    if(qmode!=="t") PLAYERS.forEach(function(p){
+      videos(p).forEach(function(x){ var v=vid(x.url); q.push({id:v.id,start:v.start,end:0,title:p.no+" "+p.name+(x.label!=="チャント"?"（"+x.label+"）":""),kind:"個人",memo:(lyrics[p.no]!=null?lyrics[p.no]:(p.lyric||""))}); });
+    });
+    if(qmode!=="p") TEAM_CHANTS.forEach(function(c){
+      var v=vid(c.url); if(!v) return;
+      q.push({id:v.id,start:v.start,end:c.end||0,title:c.name,kind:"チーム",memo:lyrics["t"+TEAM_CHANTS.indexOf(c)]||""});
+    });
+    if(qmode==="nabe"){ for(var i=q.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), tmp=q[i]; q[i]=q[j]; q[j]=tmp; } }
+    return q;
+  }
+  function show(){
+    var it=queue[qi]; if(!it) return;
+    document.getElementById("allnow").textContent=it.title;
+    document.getElementById("allmeta").textContent=it.kind+"チャント　"+(qi+1)+" / "+queue.length;
+    var m=document.getElementById("allmemo"); m.textContent=it.memo; m.classList.toggle("hide",!it.memo);
+  }
+  function playAt(i){
+    if(!queue.length) return;
+    if(qmode==="nabe" && i>=queue.length){ queue=buildQueue(); i=0; }
+    qi=(i+queue.length)%queue.length; show();
+    var it=queue[qi], o={videoId:it.id,startSeconds:it.start||0};
+    if(it.end) o.endSeconds=it.end;
+    if(ytp && ytp.loadVideoById) ytp.loadVideoById(o);
+  }
+  function makePlayer(){
+    var it=queue[qi];
+    ytp=new YT.Player("ytall",{host:"https://www.youtube-nocookie.com",videoId:it.id,
+      playerVars:{playsinline:1,rel:0,autoplay:1,start:it.start||0,end:it.end||undefined},
+      events:{
+        onReady:function(e){ e.target.playVideo(); },
+        onStateChange:function(e){ if(e.data===0) playAt(qi+1); },
+        onError:function(){ playAt(qi+1); }
+      }});
+  }
+  window.onYouTubeIframeAPIReady=function(){ apiReady=true; if(wantStart) makePlayer(); };
+  function loadApi(){
+    if(window.YT && YT.Player){ apiReady=true; return; }
+    if(document.getElementById("ytapi")) return;
+    var s=document.createElement("script"); s.id="ytapi"; s.src="https://www.youtube.com/iframe_api"; document.head.appendChild(s);
+  }
+  function setMode(m){
+    qmode=m;
+    [].forEach.call(document.querySelectorAll("#allopt button"),function(x){x.classList.toggle("on",x.dataset.mode===m)});
+  }
+  function startAll(){
+    queue=buildQueue(); qi=0; show();
+    document.getElementById("allbox").classList.remove("hide");
+    document.getElementById("allbtns").classList.add("hide");
+    if(ytp){ playAt(0); return; }
+    wantStart=true; loadApi(); if(apiReady) makePlayer();
+  }
+  document.getElementById("allopen").onclick=function(){ setMode("all"); startAll(); };
+  document.getElementById("shufopen").onclick=function(){ setMode("nabe"); startAll(); };
+  document.getElementById("nabebtn").onclick=function(e){
+    e.preventDefault(); setMode("nabe");
+    if(ytp && !document.getElementById("allbox").classList.contains("hide")){ queue=buildQueue(); playAt(0); }
+    else startAll();
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+  document.getElementById("allnext").onclick=function(){ playAt(qi+1); };
+  document.getElementById("allprev").onclick=function(){ playAt(qi-1); };
+  document.getElementById("allclose").onclick=function(){
+    if(ytp && ytp.stopVideo) ytp.stopVideo();
+    document.getElementById("allbox").classList.add("hide");
+    document.getElementById("allbtns").classList.remove("hide");
+  };
+  [].forEach.call(document.querySelectorAll("#allopt button"),function(b){
+    b.onclick=function(){
+      [].forEach.call(document.querySelectorAll("#allopt button"),function(x){x.classList.remove("on")}); b.classList.add("on");
+      setMode(b.dataset.mode); queue=buildQueue(); playAt(0);
+    };
+  });
+  window.__vegaQueue=function(m){ var o=qmode; if(m) qmode=m; var r=buildQueue(); qmode=o; return r; };
 })();
 </script>
 </body>
