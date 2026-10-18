@@ -9,7 +9,7 @@ window.PLAYERS = [
   {no:3,  pos:"DF", name:"奥山 政幸", chant:"https://youtube.com/shorts/-ZiQLMJFbnY"},
   {no:5,  pos:"DF", name:"菅田 真啓", orig:"倉田てつを「仮面ライダーBLACK」", origUrl:"https://youtu.be/h9w0yTpim6M", chant:"https://youtu.be/Kou_lvG2ABg", alt:"https://youtu.be/6V693ls3nvU?t=584"},
   {no:19, pos:"DF", name:"マテウス モラエス", chant:"https://youtube.com/shorts/-Rr85HS2q4o"},
-  {no:22, pos:"DF", name:"髙田 椋汰", orig:"Stage Bottles「One World One Crew」", origUrl:"https://youtu.be/AGa86_wYwDI", chant:"https://youtu.be/M5-KohJk4PM", extra:{label:"ボンバイエver", url:"https://www.youtube.com/watch?v=xNgBjSWObfo"}},
+  {no:22, pos:"DF", name:"髙田 椋汰", orig:"Stage Bottles「One World One Crew」", origUrl:"https://youtu.be/AGa86_wYwDI", chant:"https://youtu.be/M5-KohJk4PM", extra:{label:"ボンバイエver", url:"https://youtube.com/shorts/TssyAt5VSZo"}},
   {no:24, pos:"DF", name:"永井 大義"},
   {no:42, pos:"DF", name:"石井 隼太", chant:"https://www.youtube.com/watch?v=xNgBjSWObfo", lyric:"いーしいはーやた ラララララーラ ×2（Uh!）※新チャント"},
   {no:44, pos:"DF", name:"井上 詩音", orig:"Ai PUNK MADONNA「No1 フレンズ」", chant:"https://youtube.com/shorts/Q0SCP85srrI"},
