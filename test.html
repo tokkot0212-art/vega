@@ -75,6 +75,17 @@ h2{font-size:14px;color:var(--gold-ink);letter-spacing:.06em;margin:18px 0 8px}
 .panel textarea{width:100%;min-height:110px;font-size:20px;line-height:1.6;font-weight:700;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;resize:vertical}
 .panel .novideo{font-size:13px;color:var(--sub);padding:10px;background:var(--bg);border-radius:10px}
 .saved{color:var(--done)}
+.allbtn{width:100%;font:inherit;font-size:16px;font-weight:800;padding:13px;border:0;border-radius:12px;background:var(--gold);color:#111;margin-bottom:12px}
+#allbox{background:var(--card);border:2px solid var(--gold);border-radius:14px;padding:12px;margin-bottom:14px}
+#allbox .now{font-size:17px;font-weight:800;margin:10px 0 2px;text-align:center}
+#allbox .meta{font-size:12px;color:var(--sub);text-align:center}
+#allbox .memo{white-space:pre-wrap;font-size:18px;font-weight:700;line-height:1.6;background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:8px}
+#allbox .ctl{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+#allbox .ctl button,#allbox .opt button{font:inherit;font-size:14px;font-weight:700;padding:8px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+#allbox .opt{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+#allbox .opt button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#allplayer{position:relative;width:100%;max-width:420px;margin:0 auto;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+#allplayer iframe,#allplayer>div{position:absolute;inset:0;width:100%;height:100%}
 footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
 </style>
 </head>
@@ -89,6 +100,24 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
   </nav>
 </header>
 <main>
+  <button class="allbtn" id="allopen">▶ 全チャント連続再生（個人＋チーム）</button>
+  <div id="allbox" class="hide">
+    <div class="opt" id="allopt">
+      <button data-mode="all" class="on">個人＋チーム</button>
+      <button data-mode="p">個人だけ</button>
+      <button data-mode="t">チームだけ</button>
+      <button data-mode="nabe">🍲 チャント鍋</button>
+    </div>
+    <div id="allplayer"><div id="ytall"></div></div>
+    <div class="now" id="allnow">準備中…</div>
+    <div class="meta" id="allmeta"></div>
+    <div class="memo hide" id="allmemo"></div>
+    <div class="ctl">
+      <button id="allprev">⏮ 前へ</button>
+      <button id="allnext">次へ ⏭</button>
+      <button id="allclose">■ 閉じる</button>
+    </div>
+  </div>
   <section id="players">
     <div class="tools">
       <input id="q" type="search" placeholder="名前・背番号で検索">
@@ -97,7 +126,14 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
     <div class="progress"><span id="prog"></span><div class="bar"><i id="progbar"></i></div></div>
     <div id="list"></div>
   </section>
-  <section id="team" class="hide"><div id="teamlist"></div></section>
+  <section id="team" class="hide">
+    <div id="nabe" class="card" style="display:block;border:2px solid var(--gold)">
+      <div class="name">🍲 チャント鍋</div>
+      <div class="orig">個人チャントもチームチャントも全部ごった煮。シャッフルした順番で、止めるまで連続再生します。</div>
+      <div class="btns"><a class="main" href="#" id="nabebtn">🍲 チャント鍋をはじめる</a></div>
+    </div>
+    <div id="teamlist"></div>
+  </section>
   <section id="links" class="hide links"><div id="linklist"></div></section>
   <footer>「🎤 ページ内練習」で動画をページ内でくり返し再生し、歌詞メモを書けます（メモはこの端末だけに保存）。動画はファン・公式の投稿です。動画未登録の選手の「▶ チャント」は、YouTubeを再生回数の多い順で検索します。<br>練習済みチェックはこの端末にのみ保存されます。</footer>
 </main>
@@ -256,6 +292,83 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
     };
   });
   render();
+
+  // ===== 全チャント連続再生 =====
+  var qmode="all", queue=[], qi=0, ytp=null, apiReady=false, wantStart=false;
+  function buildQueue(){
+    var q=[];
+    if(qmode!=="t") PLAYERS.forEach(function(p){
+      videos(p).forEach(function(x){ var v=vid(x.url); q.push({id:v.id,start:v.start,end:0,title:p.no+" "+p.name+(x.label!=="チャント"?"（"+x.label+"）":""),kind:"個人",memo:(lyrics[p.no]!=null?lyrics[p.no]:(p.lyric||""))}); });
+    });
+    if(qmode!=="p") TEAM_CHANTS.forEach(function(c){
+      var v=vid(c.url); if(!v) return;
+      q.push({id:v.id,start:v.start,end:c.end||0,title:c.name,kind:"チーム",memo:""});
+    });
+    if(qmode==="nabe"){ for(var i=q.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), tmp=q[i]; q[i]=q[j]; q[j]=tmp; } }
+    return q;
+  }
+  function show(){
+    var it=queue[qi]; if(!it) return;
+    document.getElementById("allnow").textContent=it.title;
+    document.getElementById("allmeta").textContent=it.kind+"チャント　"+(qi+1)+" / "+queue.length;
+    var m=document.getElementById("allmemo"); m.textContent=it.memo; m.classList.toggle("hide",!it.memo);
+  }
+  function playAt(i){
+    if(!queue.length) return;
+    if(qmode==="nabe" && i>=queue.length){ queue=buildQueue(); i=0; }
+    qi=(i+queue.length)%queue.length; show();
+    var it=queue[qi], o={videoId:it.id,startSeconds:it.start||0};
+    if(it.end) o.endSeconds=it.end;
+    if(ytp && ytp.loadVideoById) ytp.loadVideoById(o);
+  }
+  function makePlayer(){
+    var it=queue[qi];
+    ytp=new YT.Player("ytall",{host:"https://www.youtube-nocookie.com",videoId:it.id,
+      playerVars:{playsinline:1,rel:0,autoplay:1,start:it.start||0,end:it.end||undefined},
+      events:{
+        onReady:function(e){ e.target.playVideo(); },
+        onStateChange:function(e){ if(e.data===0) playAt(qi+1); },
+        onError:function(){ playAt(qi+1); }
+      }});
+  }
+  window.onYouTubeIframeAPIReady=function(){ apiReady=true; if(wantStart) makePlayer(); };
+  function loadApi(){
+    if(window.YT && YT.Player){ apiReady=true; return; }
+    if(document.getElementById("ytapi")) return;
+    var s=document.createElement("script"); s.id="ytapi"; s.src="https://www.youtube.com/iframe_api"; document.head.appendChild(s);
+  }
+  function setMode(m){
+    qmode=m;
+    [].forEach.call(document.querySelectorAll("#allopt button"),function(x){x.classList.toggle("on",x.dataset.mode===m)});
+  }
+  function startAll(){
+    queue=buildQueue(); qi=0; show();
+    document.getElementById("allbox").classList.remove("hide");
+    document.getElementById("allopen").classList.add("hide");
+    if(ytp){ playAt(0); return; }
+    wantStart=true; loadApi(); if(apiReady) makePlayer();
+  }
+  document.getElementById("allopen").onclick=startAll;
+  document.getElementById("nabebtn").onclick=function(e){
+    e.preventDefault(); setMode("nabe");
+    if(ytp && !document.getElementById("allbox").classList.contains("hide")){ queue=buildQueue(); playAt(0); }
+    else startAll();
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+  document.getElementById("allnext").onclick=function(){ playAt(qi+1); };
+  document.getElementById("allprev").onclick=function(){ playAt(qi-1); };
+  document.getElementById("allclose").onclick=function(){
+    if(ytp && ytp.stopVideo) ytp.stopVideo();
+    document.getElementById("allbox").classList.add("hide");
+    document.getElementById("allopen").classList.remove("hide");
+  };
+  [].forEach.call(document.querySelectorAll("#allopt button"),function(b){
+    b.onclick=function(){
+      [].forEach.call(document.querySelectorAll("#allopt button"),function(x){x.classList.remove("on")}); b.classList.add("on");
+      setMode(b.dataset.mode); queue=buildQueue(); playAt(0);
+    };
+  });
+  window.__vegaQueue=function(m){ var o=qmode; if(m) qmode=m; var r=buildQueue(); qmode=o; return r; };
 })();
 </script>
 </body>

@@ -40,18 +40,18 @@ window.PLAYERS = [
 
 // チームチャント（チャント集動画のタイムスタンプ）
 window.TEAM_CHANTS = [
-  {name:"レッツゴー", orig:"Ramones「Blitzkrieg Bop」", url:"https://youtu.be/6V693ls3nvU?t=10"},
-  {name:"COBRA", orig:"COBRA「やっちまえ! Popstar」", url:"https://youtu.be/6V693ls3nvU?t=40"},
-  {name:"TWISTED", orig:"Twisted Sister「We're Not Gonna Take It」", url:"https://youtu.be/6V693ls3nvU?t=90"},
-  {name:"カントリーロード", orig:"John Denver「Take Me Home, Country Roads」", url:"https://youtu.be/6V693ls3nvU?t=137"},
-  {name:"アレ仙台", orig:"STRONG STYLE「口笛吹いて」", url:"https://youtu.be/6V693ls3nvU?t=183"},
-  {name:"電光石火", orig:"THE BLUE HEARTS「電光石火」", url:"https://youtu.be/6V693ls3nvU?t=237"},
-  {name:"UP", orig:"", url:"https://youtu.be/6V693ls3nvU?t=263"},
-  {name:"仙台に捧ぐ", orig:"SA「青春に捧ぐ part2」", url:"https://youtu.be/6V693ls3nvU?t=279"},
-  {name:"シャンゼリゼ", orig:"「オー・シャンゼリゼ」", url:"https://youtu.be/6V693ls3nvU?t=318"},
-  {name:"FORZA", orig:"", url:"https://youtu.be/6V693ls3nvU?t=391"},
-  {name:"シャム", orig:"Sham 69「That's Life」", url:"https://youtu.be/6V693ls3nvU?t=403"},
-  {name:"Team Call", orig:"", url:"https://youtu.be/6V693ls3nvU?t=440"},
+  {name:"レッツゴー", orig:"Ramones「Blitzkrieg Bop」", url:"https://youtu.be/6V693ls3nvU?t=10", end:39},
+  {name:"COBRA", orig:"COBRA「やっちまえ! Popstar」", url:"https://youtu.be/6V693ls3nvU?t=40", end:89},
+  {name:"TWISTED", orig:"Twisted Sister「We're Not Gonna Take It」", url:"https://youtu.be/6V693ls3nvU?t=90", end:136},
+  {name:"カントリーロード", orig:"John Denver「Take Me Home, Country Roads」", url:"https://youtu.be/6V693ls3nvU?t=137", end:182},
+  {name:"アレ仙台", orig:"STRONG STYLE「口笛吹いて」", url:"https://youtu.be/6V693ls3nvU?t=183", end:236},
+  {name:"電光石火", orig:"THE BLUE HEARTS「電光石火」", url:"https://youtu.be/6V693ls3nvU?t=237", end:262},
+  {name:"UP", orig:"", url:"https://youtu.be/6V693ls3nvU?t=263", end:278},
+  {name:"仙台に捧ぐ", orig:"SA「青春に捧ぐ part2」", url:"https://youtu.be/6V693ls3nvU?t=279", end:317},
+  {name:"シャンゼリゼ", orig:"「オー・シャンゼリゼ」", url:"https://youtu.be/6V693ls3nvU?t=318", end:360},
+  {name:"FORZA", orig:"", url:"https://youtu.be/6V693ls3nvU?t=391", end:402},
+  {name:"シャム", orig:"Sham 69「That's Life」", url:"https://youtu.be/6V693ls3nvU?t=403", end:439},
+  {name:"Team Call", orig:"", url:"https://youtu.be/6V693ls3nvU?t=440", end:455},
   {name:"C'mon", orig:"LAUGHIN' NOSE「C'mon Everybody」", url:"https://youtube.com/shorts/VpTbh8z1vGs"}
 ];
 
