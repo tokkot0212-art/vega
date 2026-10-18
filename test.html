@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ベガ応援帳</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ベガ応援帳">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --bg:#f6f4ee; --card:#ffffff; --ink:#1a1a1a; --sub:#6b665c; --line:#e4dfd3;
+  --gold:#c9a227; --gold-ink:#7a5f00; --navy:#1b2a4a; --done:#2f7d4f;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0f0f10; --card:#1a1a1c; --ink:#f2efe8; --sub:#a39d90; --line:#2c2b29;
+    --gold:#e2bb3e; --gold-ink:#e2bb3e; --navy:#9fb4e0; --done:#5fc28a; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif;
+  -webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:#111;color:#fff;
+  padding:calc(env(safe-area-inset-top) + 10px) 16px 0}
+header h1{margin:0;font-size:20px;letter-spacing:.04em}
+header h1 span{color:var(--gold)}
+.sub{font-size:12px;color:#bbb;margin-top:2px}
+nav{display:flex;gap:4px;margin-top:10px;overflow-x:auto}
+nav button{flex:1;border:0;background:transparent;color:#aaa;font-size:15px;font-weight:600;
+  padding:10px 4px;border-bottom:3px solid transparent}
+nav button.on{color:#fff;border-bottom-color:var(--gold)}
+main{padding:12px 16px calc(env(safe-area-inset-bottom) + 24px);max-width:720px;margin:0 auto}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tools input{flex:1 1 160px;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:14px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.progress{font-size:13px;color:var(--sub);margin:4px 0 10px}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--gold);width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.num{flex:0 0 48px;height:48px;border-radius:12px;background:#111;color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
+.body{flex:1;min-width:0}
+.name{font-size:17px;font-weight:700}
+.pos{font-size:11px;color:var(--sub);margin-left:6px;font-weight:600}
+.orig{font-size:12.5px;color:var(--sub);margin-top:2px}
+.btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.btns a{text-decoration:none;font-size:13px;font-weight:600;padding:7px 10px;border-radius:9px;border:1px solid var(--line);color:var(--ink);background:transparent}
+.btns a.main{background:var(--gold);border-color:var(--gold);color:#111}
+.chk{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--sub);gap:2px}
+.chk input{width:24px;height:24px;accent-color:var(--done)}
+.card.done{border-color:var(--done)}
+.nochant{font-size:12px;color:var(--sub);margin-top:2px}
+h2{font-size:14px;color:var(--gold-ink);letter-spacing:.06em;margin:18px 0 8px}
+.links a{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:6px;font-size:15px}
+.links a::after{content:"›";color:var(--sub);font-size:20px}
+.hide{display:none}
+.card{flex-wrap:wrap}
+.btns button.prac{font:inherit;font-size:13px;font-weight:600;padding:7px 10px;border-radius:9px;border:1px solid var(--navy);color:var(--navy);background:transparent}
+.btns button.prac.on{background:var(--navy);color:var(--bg)}
+.panel{flex:1 1 100%;margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+.vtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.vtabs button{font:inherit;font-size:13px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.vtabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.player{position:relative;width:100%;max-width:230px;margin:0 auto;aspect-ratio:9/16;background:#000;border-radius:12px;overflow:hidden}
+.player.wide{max-width:none;aspect-ratio:16/9}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.panel .lbl{font-size:12px;color:var(--sub);margin:10px 0 4px;display:flex;justify-content:space-between}
+.panel textarea{width:100%;min-height:110px;font-size:20px;line-height:1.6;font-weight:700;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;resize:vertical}
+.panel .novideo{font-size:13px;color:var(--sub);padding:10px;background:var(--bg);border-radius:10px}
+.saved{color:var(--done)}
+footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <h1>ベガ<span>応援帳</span></h1>
+  <div class="sub">2026/27 ベガルタ仙台 チャント練習 & リンク集（ページ内練習 テスト版）</div>
+  <nav>
+    <button data-tab="players" class="on">選手</button>
+    <button data-tab="team">チーム</button>
+    <button data-tab="links">リンク</button>
+  </nav>
+</header>
+<main>
+  <section id="players">
+    <div class="tools">
+      <input id="q" type="search" placeholder="名前・背番号で検索">
+    </div>
+    <div class="chips" id="pos"></div>
+    <div class="progress"><span id="prog"></span><div class="bar"><i id="progbar"></i></div></div>
+    <div id="list"></div>
+  </section>
+  <section id="team" class="hide"><div id="teamlist"></div></section>
+  <section id="links" class="hide links"><div id="linklist"></div></section>
+  <footer>「🎤 ページ内練習」で動画をページ内でくり返し再生し、歌詞メモを書けます（メモはこの端末だけに保存）。動画はファン・公式の投稿です。動画未登録の選手の「▶ チャント」は、YouTubeを再生回数の多い順で検索します。<br>練習済みチェックはこの端末にのみ保存されます。</footer>
+</main>
+<script src="data.js"></script>
+<script>
+(function(){
+  var KEY="vega-ouen-done";
+  var done={};
+  try{ done=JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ done={}; }
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(done)); }catch(e){} }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function yt(q){ return "https://www.youtube.com/results?search_query="+encodeURIComponent(q); }
+
+  var posSel="ALL", posList=["ALL","動画あり","GK","DF","MF","FW"];
+  var posEl=document.getElementById("pos");
+  posList.forEach(function(p){
+    var b=document.createElement("button"); b.className="chip"+(p===posSel?" on":""); b.textContent=p==="ALL"?"全員":p;
+    b.onclick=function(){ posSel=p; [].forEach.call(posEl.children,function(x){x.classList.remove("on")}); b.classList.add("on"); render(); };
+    posEl.appendChild(b);
+  });
+  document.getElementById("q").addEventListener("input",render);
+
+  var LKEY="vega-ouen-lyrics", lyrics={}, openP={}, vSel={};
+  try{ lyrics=JSON.parse(localStorage.getItem(LKEY)||"{}")||{}; }catch(e){ lyrics={}; }
+  function saveLyrics(){ try{ localStorage.setItem(LKEY,JSON.stringify(lyrics)); return true; }catch(e){ return false; } }
+  function vid(u){
+    var m=String(u||"").match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([A-Za-z0-9_-]{11})/);
+    if(!m) return null;
+    var t=String(u).match(/[?&](?:t|start)=(\d+)/);
+    return {id:m[1], start:t?+t[1]:0, shorts:/shorts\//.test(u)};
+  }
+  function videos(p){
+    var v=[];
+    if(p.chant) v.push({label:"チャント", url:p.chant});
+    if(p.extra) v.push({label:p.extra.label, url:p.extra.url});
+    return v.filter(function(x){return vid(x.url)});
+  }
+  function embed(url){
+    var v=vid(url);
+    var src="https://www.youtube-nocookie.com/embed/"+v.id+"?playsinline=1&rel=0&loop=1&playlist="+v.id+(v.start?"&start="+v.start:"");
+    return '<div class="player'+(v.shorts?'':' wide')+'"><iframe src="'+src+'" title="チャント動画" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>';
+  }
+  function panelHtml(p){
+    var vs=videos(p), sel=Math.min(vSel[p.no]||0, Math.max(vs.length-1,0));
+    var h='<div class="panel" data-panel="'+p.no+'">';
+    if(vs.length){
+      if(vs.length>1){
+        h+='<div class="vtabs">';
+        vs.forEach(function(x,i){ h+='<button data-vsel="'+p.no+':'+i+'" class="'+(i===sel?"on":"")+'">'+esc(x.label)+'</button>'; });
+        h+='</div>';
+      }
+      h+=embed(vs[sel].url);
+    } else {
+      h+='<div class="novideo">この選手は動画が未登録です。歌詞メモだけで練習できます。</div>';
+    }
+    var txt=(lyrics[p.no]!=null)?lyrics[p.no]:(p.lyric||"");
+    h+='<div class="lbl"><span>歌詞・メモ（自由に書けます）</span><span class="saved" id="sv'+p.no+'"></span></div>';
+    h+='<textarea data-lyric="'+p.no+'" placeholder="覚えた歌詞やコールを書いておこう">'+esc(txt)+'</textarea>';
+    return h+'</div>';
+  }
+
+  function render(){
+    var q=document.getElementById("q").value.trim().replace(/\s/g,"");
+    var html="";
+    PLAYERS.forEach(function(p){
+      if(posSel==="動画あり" && !p.chant) return;
+      if(["GK","DF","MF","FW"].indexOf(posSel)>=0 && p.pos!==posSel) return;
+      if(q && (p.name.replace(/\s/g,"").indexOf(q)<0) && String(p.no)!==q) return;
+      var id="p"+p.no, isDone=!!done[id];
+      var b="";
+      var q2="ベガルタ "+p.name.replace(/\s/g,"")+" チャント";
+      if(p.chant) b+='<a class="main" href="'+esc(p.chant)+'" target="_blank" rel="noopener">▶ チャント</a>';
+      else b+='<a class="main" href="'+yt(q2)+'&sp=CAM%253D" target="_blank" rel="noopener">▶ チャント</a>';
+      if(p.extra) b+='<a class="main" href="'+esc(p.extra.url)+'" target="_blank" rel="noopener">▶ '+esc(p.extra.label)+'</a>';
+      b+='<a href="'+yt(q2)+'" target="_blank" rel="noopener">YouTubeで探す</a>';
+      b+='<button class="prac'+(openP[p.no]?" on":"")+'" data-prac="'+p.no+'">🎤 ページ内練習</button>';
+      html+='<div class="card'+(isDone?" done":"")+'">'+
+        '<div class="num">'+p.no+'</div>'+
+        '<div class="body"><div class="name">'+esc(p.name)+'<span class="pos">'+p.pos+(p.note?" · "+esc(p.note):"")+'</span></div>'+
+        (p.orig?'<div class="orig">原曲：'+esc(p.orig)+'</div>':'')+
+        (p.lyric?'<div class="orig">♪ '+esc(p.lyric)+'</div>':'')+
+        (p.chant||p.lyric?'':'<div class="nochant">再生数の多い順に表示</div>')+
+        '<div class="btns">'+b+'</div></div>'+
+        '<label class="chk"><input type="checkbox" data-id="'+id+'"'+(isDone?" checked":"")+'>練習済</label>'+
+        (openP[p.no]?panelHtml(p):'')+
+        '</div>';
+    });
+    document.getElementById("list").innerHTML=html||'<p class="nochant">該当なし</p>';
+    var withChant=PLAYERS;
+    var n=withChant.filter(function(p){return done["p"+p.no]}).length;
+    document.getElementById("prog").textContent="チャント練習 "+n+" / "+withChant.length+" 人";
+    document.getElementById("progbar").style.width=(withChant.length?n/withChant.length*100:0)+"%";
+  }
+  function updProg(){
+    var n=PLAYERS.filter(function(p){return done["p"+p.no]}).length;
+    document.getElementById("prog").textContent="チャント練習 "+n+" / "+PLAYERS.length+" 人";
+    document.getElementById("progbar").style.width=(n/PLAYERS.length*100)+"%";
+  }
+  var listEl=document.getElementById("list");
+  listEl.addEventListener("change",function(e){
+    var id=e.target.getAttribute("data-id"); if(!id) return;
+    if(e.target.checked) done[id]=1; else delete done[id];
+    save(); e.target.closest(".card").classList.toggle("done",e.target.checked); updProg();
+  });
+  listEl.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    var card=b.closest(".card");
+    if(b.dataset.prac){
+      var no=+b.dataset.prac, p=PLAYERS.filter(function(x){return x.no===no})[0];
+      var pn=card.querySelector(".panel");
+      if(pn){ pn.remove(); delete openP[no]; b.classList.remove("on"); }
+      else { openP[no]=1; b.classList.add("on"); card.insertAdjacentHTML("beforeend",panelHtml(p)); }
+    } else if(b.dataset.vsel){
+      var a=b.dataset.vsel.split(":"), no2=+a[0]; vSel[no2]=+a[1];
+      var p2=PLAYERS.filter(function(x){return x.no===no2})[0];
+      card.querySelector(".panel").outerHTML=panelHtml(p2);
+    }
+  });
+  var tmr={};
+  listEl.addEventListener("input",function(e){
+    var no=e.target.dataset && e.target.dataset.lyric; if(!no) return;
+    lyrics[no]=e.target.value;
+    clearTimeout(tmr[no]); tmr[no]=setTimeout(function(){
+      var ok=saveLyrics(), el=document.getElementById("sv"+no); if(el) el.textContent=ok?"保存しました":"この端末では保存できません";
+    },400);
+  });
+
+  var th="";
+  TEAM_CHANTS.forEach(function(c,i){
+    var id="t"+i, isDone=!!done[id];
+    th+='<div class="card'+(isDone?" done":"")+'"><div class="num" style="font-size:14px">'+(i+1)+'</div><div class="body"><div class="name">'+esc(c.name)+'</div>'+
+      (c.orig?'<div class="orig">原曲：'+esc(c.orig)+'</div>':'')+
+      '<div class="btns"><a class="main" href="'+esc(c.url)+'" target="_blank" rel="noopener">▶ 再生</a><a href="'+yt("ベガルタ "+c.name+" チャント")+'" target="_blank" rel="noopener">YouTubeで探す</a></div></div>'+
+      '<label class="chk"><input type="checkbox" data-id="'+id+'"'+(isDone?" checked":"")+'>練習済</label></div>';
+  });
+  var tl=document.getElementById("teamlist"); tl.innerHTML=th;
+  tl.addEventListener("change",function(e){
+    var id=e.target.getAttribute("data-id"); if(!id) return;
+    if(e.target.checked) done[id]=1; else delete done[id];
+    save(); e.target.closest(".card").classList.toggle("done",e.target.checked);
+  });
+
+  var lh="";
+  LINKS.forEach(function(g){
+    lh+='<h2>'+esc(g.group)+'</h2>';
+    g.items.forEach(function(it){ lh+='<a href="'+esc(it.u)+'" target="_blank" rel="noopener">'+esc(it.t)+'</a>'; });
+  });
+  document.getElementById("linklist").innerHTML=lh;
+
+  var tabs=document.querySelectorAll("nav button");
+  [].forEach.call(tabs,function(b){
+    b.onclick=function(){
+      [].forEach.call(tabs,function(x){x.classList.remove("on")}); b.classList.add("on");
+      ["players","team","links"].forEach(function(s){ document.getElementById(s).classList.toggle("hide",s!==b.dataset.tab); });
+      window.scrollTo(0,0);
+    };
+  });
+  render();
+})();
+</script>
+</body>
+</html>
