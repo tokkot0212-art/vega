@@ -85,7 +85,7 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
   </section>
   <section id="team" class="hide"><div id="teamlist"></div></section>
   <section id="links" class="hide links"><div id="linklist"></div></section>
-  <footer>動画はファン・公式の投稿へのリンクです。チャント未確認の選手は「YouTubeで探す」から検索できます。<br>練習済みチェックはこの端末にのみ保存されます。</footer>
+  <footer>動画はファン・公式の投稿へのリンクです。動画未登録の選手の「▶ チャント」は、YouTubeを再生回数の多い順で検索します。<br>練習済みチェックはこの端末にのみ保存されます。</footer>
 </main>
 <script src="data.js"></script>
 <script>
@@ -97,7 +97,7 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
   function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
   function yt(q){ return "https://www.youtube.com/results?search_query="+encodeURIComponent(q); }
 
-  var posSel="ALL", posList=["ALL","チャントあり","GK","DF","MF","FW"];
+  var posSel="ALL", posList=["ALL","動画あり","GK","DF","MF","FW"];
   var posEl=document.getElementById("pos");
   posList.forEach(function(p){
     var b=document.createElement("button"); b.className="chip"+(p===posSel?" on":""); b.textContent=p==="ALL"?"全員":p;
@@ -110,25 +110,27 @@ footer{font-size:11px;color:var(--sub);margin-top:20px;line-height:1.6}
     var q=document.getElementById("q").value.trim().replace(/\s/g,"");
     var html="";
     PLAYERS.forEach(function(p){
-      if(posSel==="チャントあり" && !p.chant) return;
+      if(posSel==="動画あり" && !p.chant) return;
       if(["GK","DF","MF","FW"].indexOf(posSel)>=0 && p.pos!==posSel) return;
       if(q && (p.name.replace(/\s/g,"").indexOf(q)<0) && String(p.no)!==q) return;
       var id="p"+p.no, isDone=!!done[id];
       var b="";
+      var q2="ベガルタ "+p.name.replace(/\s/g,"")+" チャント";
       if(p.chant) b+='<a class="main" href="'+esc(p.chant)+'" target="_blank" rel="noopener">▶ チャント</a>';
-      if(p.alt) b+='<a href="'+esc(p.alt)+'" target="_blank" rel="noopener">別の動画</a>';
-      if(p.origUrl) b+='<a href="'+esc(p.origUrl)+'" target="_blank" rel="noopener">原曲</a>';
-      b+='<a href="'+yt("ベガルタ "+p.name.replace(/\s/g,"")+" チャント")+'" target="_blank" rel="noopener">YouTubeで探す</a>';
+      else b+='<a class="main" href="'+yt(q2)+'&sp=CAM%253D" target="_blank" rel="noopener">▶ チャント</a>';
+      b+='<a href="'+yt(q2)+'" target="_blank" rel="noopener">YouTubeで探す</a>';
       html+='<div class="card'+(isDone?" done":"")+'">'+
         '<div class="num">'+p.no+'</div>'+
         '<div class="body"><div class="name">'+esc(p.name)+'<span class="pos">'+p.pos+(p.note?" · "+esc(p.note):"")+'</span></div>'+
-        (p.orig?'<div class="orig">原曲：'+esc(p.orig)+'</div>':(p.chant?'':'<div class="nochant">個人チャント未確認</div>'))+
+        (p.orig?'<div class="orig">原曲：'+esc(p.orig)+'</div>':'')+
+        (p.lyric?'<div class="orig">♪ '+esc(p.lyric)+'</div>':'')+
+        (p.chant||p.lyric?'':'<div class="nochant">再生数の多い順に表示</div>')+
         '<div class="btns">'+b+'</div></div>'+
         '<label class="chk"><input type="checkbox" data-id="'+id+'"'+(isDone?" checked":"")+'>練習済</label>'+
         '</div>';
     });
     document.getElementById("list").innerHTML=html||'<p class="nochant">該当なし</p>';
-    var withChant=PLAYERS.filter(function(p){return p.chant});
+    var withChant=PLAYERS;
     var n=withChant.filter(function(p){return done["p"+p.no]}).length;
     document.getElementById("prog").textContent="チャント練習 "+n+" / "+withChant.length+" 人";
     document.getElementById("progbar").style.width=(withChant.length?n/withChant.length*100:0)+"%";

@@ -11,7 +11,7 @@ window.PLAYERS = [
   {no:19, pos:"DF", name:"マテウス モラエス"},
   {no:22, pos:"DF", name:"髙田 椋汰", orig:"Stage Bottles「One World One Crew」", origUrl:"https://youtu.be/AGa86_wYwDI", chant:"https://youtu.be/M5-KohJk4PM"},
   {no:24, pos:"DF", name:"永井 大義"},
-  {no:42, pos:"DF", name:"石井 隼太"},
+  {no:42, pos:"DF", name:"石井 隼太", lyric:"いーしいはーやた ラララララーラ ×2（Uh!）※新チャント"},
   {no:44, pos:"DF", name:"井上 詩音", orig:"Ai PUNK MADONNA「No1 フレンズ」", chant:"https://youtube.com/shorts/Q0SCP85srrI"},
   {no:55, pos:"DF", name:"韓 浩康"},
   {no:4,  pos:"MF", name:"湯谷 杏吏"},
