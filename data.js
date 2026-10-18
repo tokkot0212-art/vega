@@ -30,7 +30,7 @@ window.PLAYERS = [
   {no:7,  pos:"FW", name:"中島 元彦", chant:"https://www.youtube.com/watch?v=IOJasWk76fE", alt:"https://www.youtube.com/watch?v=4JzCM7DrEDk"},
   {no:9,  pos:"FW", name:"宮崎 鴻", orig:"THT MODS「PRISNER(野獣を野に放て)」", origUrl:"https://youtu.be/z3tfwOFf08U", chant:"https://youtu.be/QKvkiEkgnwU"},
   {no:11, pos:"FW", name:"小林 心", orig:"萬Z(量産型)「日本ブレイク工業 社歌」", chant:"https://youtu.be/VmwMD-bMIyo"},
-  {no:18, pos:"FW", name:"梅木 翼"},
+  {no:18, pos:"FW", name:"梅木 翼", chant:"https://www.youtube.com/shorts/N4OxgQbQaMI"},
   {no:20, pos:"FW", name:"中田 有祐"},
   {no:30, pos:"FW", name:"西丸 道人"},
   {no:34, pos:"FW", name:"古屋 歩夢"},
